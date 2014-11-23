@@ -24,6 +24,7 @@ function doSend(username, message) {
         'message': message
     };
     websocket.send(JSON.stringify(json));
+    textField.value = "";
 }
 
 function join() {
@@ -47,7 +48,7 @@ function list_users() {
     }
 }
 
-function onOpen() {
+function onOpen(evt) {
     writeToScreen("Connected to " + wsUri);
 }
 
