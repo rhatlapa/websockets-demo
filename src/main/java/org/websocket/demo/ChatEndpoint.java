@@ -17,9 +17,9 @@ import java.io.IOException;
 )
 public class ChatEndpoint {
     @OnMessage
-    public void message(Message message, Session client) throws IOException, EncodeException {
+    public void message(Message message, Session session) throws IOException, EncodeException {
         System.out.println("message: " + message);
-        for (Session peer : client.getOpenSessions()) {
+        for (Session peer : session.getOpenSessions()) {
             peer.getBasicRemote().sendObject(message);
         }
     }
