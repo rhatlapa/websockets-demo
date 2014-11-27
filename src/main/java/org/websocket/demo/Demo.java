@@ -16,14 +16,20 @@ import java.util.concurrent.TimeUnit;
 public class Demo {
 
     public static void main(String[] args) throws Exception {
-        ChatClientEndpoint.latch = new CountDownLatch(1);
+        ChatClientEndpoint.latch = new CountDownLatch(2);
         Session session = connectToChatServerEndpoint(ChatClientEndpoint.class);
-        Message message = new Message();
-        message.setUsername("Joe");
-        message.setMessage("Hello message");
-        session.getBasicRemote().sendObject(message);
-        ChatClientEndpoint.latch.await(5, TimeUnit.SECONDS);
-        System.out.println("Message history = " + ChatClientEndpoint.messageHistory.toString());
+        try {
+            Message joeMessage = new Message("Joe", "Hello");
+            Message maxMessage = new Message("Max", "Greetings");
+            session.getBasicRemote().sendObject(joeMessage);
+            session.getAsyncRemote().sendObject(maxMessage);
+
+            ChatClientEndpoint.latch.await(5, TimeUnit.SECONDS);
+            System.out.println("Joe history = " + ChatClientEndpoint.messageHistory.toString());
+
+        } finally {
+            session.close();
+        }
     }
 
     public static Session connectToChatServerEndpoint(Class<?> endpoint) throws IOException, DeploymentException, URISyntaxException {
